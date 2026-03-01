@@ -12,17 +12,14 @@ function calculateCurrentValue(stocks) {
 
 async function fetchLivePrice(symbol) {
     try {
-        const url = `https://api.allorigins.win/get?url=${encodeURIComponent(
+        const response = await fetch(
             `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbol}`
-        )}`;
+        );
 
-        const response = await fetch(url);
         const data = await response.json();
-        const parsed = JSON.parse(data.contents);
-
-        return parsed.quoteResponse.result[0].regularMarketPrice;
+        return data.quoteResponse.result[0].regularMarketPrice;
     } catch (error) {
-        console.log("Live price fetch failed", error);
+        console.log("Error fetching price", error);
         return null;
     }
 }
