@@ -1,27 +1,57 @@
 let portfolio = loadPortfolio();
 
+/* ================= LIVE PRICE FETCH ================= */
+
+async function fetchLivePrice(symbol) {
+    try {
+        const response = await fetch(
+            "https://stock-price-proxy-rktn.onrender.com/price/" + symbol
+        );
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+
+        if (data.price !== undefined && !isNaN(data.price)) {
+            return parseFloat(data.price);
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Live price fetch error:", error);
+        return null;
+    }
+}
+
 /* ================= DASHBOARD ================= */
 
 function showDashboard() {
-    portfolio = loadPortfolio(); // Always reload latest data
+    portfolio = loadPortfolio();
 
     const invested = calculateTotalInvested(portfolio);
     const current = calculateCurrentValue(portfolio);
     const profit = current - invested;
-    const percent = invested > 0 ? ((profit / invested) * 100).toFixed(2) : 0;
+    const percent =
+        invested > 0 ? ((profit / invested) * 100).toFixed(2) : 0;
+
+    const color = profit >= 0 ? "green" : "red";
 
     document.getElementById("content").innerHTML = `
         <h2>Dashboard</h2>
         <p>Total Invested: ₹${invested.toFixed(2)}</p>
         <p>Current Value: ₹${current.toFixed(2)}</p>
-        <p>Profit/Loss: ₹${profit.toFixed(2)} (${percent}%)</p>
+        <p style="color:${color}">
+            Profit/Loss: ₹${profit.toFixed(2)} (${percent}%)
+        </p>
     `;
 }
 
 /* ================= PORTFOLIO ================= */
 
 async function showPortfolio() {
-    portfolio = loadPortfolio(); // Always reload
+    portfolio = loadPortfolio();
 
     let html = "<h2>Portfolio</h2>";
 
@@ -40,21 +70,29 @@ async function showPortfolio() {
         const value = stock.quantity * stock.currentPrice;
         const invested = stock.quantity * stock.price;
         const gain = value - invested;
-        const gainPercent = invested > 0 ? ((gain / invested) * 100).toFixed(2) : 0;
+        const gainPercent =
+            invested > 0 ? ((gain / invested) * 100).toFixed(2) : 0;
+
+        const color = gain >= 0 ? "green" : "red";
 
         html += `
             <p>
-            <strong>${stock.name}</strong> 
-            | Qty: ${stock.quantity} 
+            <strong>${stock.name}</strong>
+            | Qty: ${stock.quantity}
             | Buy: ₹${stock.price}
             | Live: ₹${stock.currentPrice}
-            | P/L: ₹${gain.toFixed(2)} (${gainPercent}%)
+            | <span style="color:${color}">
+                P/L: ₹${gain.toFixed(2)} (${gainPercent}%)
+              </span>
             </p>
         `;
     }
 
     savePortfolio(portfolio);
     document.getElementById("content").innerHTML = html;
+
+    // Auto refresh every 30 seconds
+    setTimeout(showPortfolio, 30000);
 }
 
 /* ================= ADD STOCK ================= */
@@ -108,3 +146,4 @@ async function addStock() {
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
