@@ -278,6 +278,17 @@ function showRisk() {
         <p>(Add historical volatility later for advanced risk metrics)</p>
     `;
 }
+function downloadExcel() {
+
+    portfolio = loadPortfolio();
+
+    const worksheet = XLSX.utils.json_to_sheet(portfolio);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Portfolio");
+
+    XLSX.writeFile(workbook, "portfolio.xlsx");
+}
 function showAllocation() {
     portfolio = loadPortfolio();
 
@@ -312,6 +323,7 @@ function showAllocation() {
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
 
 
 
