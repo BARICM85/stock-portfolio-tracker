@@ -234,7 +234,38 @@ function handleExcelUpload() {
 
     reader.readAsArrayBuffer(file);
 }
+function showAllocation() {
+    portfolio = loadPortfolio();
 
+    if (portfolio.length === 0) {
+        document.getElementById("content").innerHTML = "<p>No stocks added.</p>";
+        return;
+    }
+
+    let labels = [];
+    let values = [];
+
+    portfolio.forEach(stock => {
+        labels.push(stock.name);
+        values.push(stock.quantity * stock.currentPrice);
+    });
+
+    document.getElementById("content").innerHTML = `
+        <h2>Portfolio Allocation</h2>
+        <canvas id="pieChart"></canvas>
+    `;
+
+    new Chart(document.getElementById("pieChart"), {
+        type: "pie",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values
+            }]
+        }
+    });
+}
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
