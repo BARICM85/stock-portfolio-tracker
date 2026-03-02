@@ -4,23 +4,28 @@ let portfolio = loadPortfolio();
 
 async function fetchLivePrice(symbol) {
     try {
+        console.log("Fetching:", symbol);
+
         const response = await fetch(
             "https://stock-price-proxy-2owf.onrender.com/price/" + symbol
         );
 
         if (!response.ok) {
+            console.log("Response not OK");
             return null;
         }
 
         const data = await response.json();
 
-        if (data.price !== undefined && !isNaN(data.price)) {
+        console.log("API Response:", data);
+
+        if (data.price && !isNaN(data.price)) {
             return parseFloat(data.price);
         }
 
         return null;
     } catch (error) {
-        console.error("Live price fetch error:", error);
+        console.error("Fetch error:", error);
         return null;
     }
 }
@@ -146,5 +151,6 @@ async function addStock() {
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
 
 
