@@ -2,11 +2,13 @@
 <html>
 <head>
     <title>Stock Portfolio Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>Stock Portfolio Tracker</h1>
+    <h1>📊 Stock Portfolio Tracker</h1>
 
     <nav>
         <button onclick="showDashboard()">Dashboard</button>
@@ -14,11 +16,19 @@
         <button onclick="showAddStock()">Add Stock</button>
     </nav>
 
+    <hr>
+
     <div id="content"></div>
 
+    <!-- Core Scripts -->
     <script src="storage.js"></script>
     <script src="portfolioEngine.js"></script>
     <script src="app.js"></script>
+
+    <!-- Auto Load Portfolio on First Visit -->
+    <script>
+        showPortfolio();
+    </script>
 
 </body>
 </html>
