@@ -53,23 +53,36 @@ async function showPortfolio() {
 
     let html = "<h2>Portfolio</h2>";
 
+    let totalInvested = 0;
+    let totalCurrent = 0;
+
+    let bestStock = null;
+    let worstStock = null;
+
     for (let stock of portfolio) {
 
         try {
             const livePrice = await fetchLivePrice(stock.symbol);
-
             if (livePrice !== null && !isNaN(livePrice)) {
                 stock.currentPrice = livePrice;
             }
-        } catch (err) {
-            console.log("Live price error for", stock.symbol);
+        } catch {}
+
+        const invested = stock.quantity * stock.price;
+        const current = stock.quantity * stock.currentPrice;
+        const gain = current - invested;
+        const gainPercent = invested > 0 ? (gain / invested) * 100 : 0;
+
+        totalInvested += invested;
+        totalCurrent += current;
+
+        if (!bestStock || gainPercent > bestStock.gainPercent) {
+            bestStock = { name: stock.name, gainPercent };
         }
 
-        const value = stock.quantity * stock.currentPrice;
-        const invested = stock.quantity * stock.price;
-        const gain = value - invested;
-        const gainPercent =
-            invested > 0 ? ((gain / invested) * 100).toFixed(2) : 0;
+        if (!worstStock || gainPercent < worstStock.gainPercent) {
+            worstStock = { name: stock.name, gainPercent };
+        }
 
         const color = gain >= 0 ? "green" : "red";
 
@@ -80,17 +93,36 @@ async function showPortfolio() {
             | Buy: ₹${stock.price}
             | Live: ₹${stock.currentPrice}
             | <span style="color:${color}">
-                P/L: ₹${gain.toFixed(2)} (${gainPercent}%)
+              P/L: ₹${gain.toFixed(2)} (${gainPercent.toFixed(2)}%)
               </span>
             </p>
         `;
     }
 
+    const totalGain = totalCurrent - totalInvested;
+    const totalPercent = totalInvested > 0
+        ? ((totalGain / totalInvested) * 100).toFixed(2)
+        : 0;
+
+    const summaryColor = totalGain >= 0 ? "green" : "red";
+
+    html = `
+        <div style="padding:15px;border:1px solid #ccc;margin-bottom:15px;">
+            <h3>Portfolio Summary</h3>
+            <p>Total Invested: ₹${totalInvested.toFixed(2)}</p>
+            <p>Total Current Value: ₹${totalCurrent.toFixed(2)}</p>
+            <p style="color:${summaryColor}">
+                Total P/L: ₹${totalGain.toFixed(2)} (${totalPercent}%)
+            </p>
+            <p>Best Performer: ${bestStock ? bestStock.name : "-"} 
+                (${bestStock ? bestStock.gainPercent.toFixed(2) : 0}%)</p>
+            <p>Worst Performer: ${worstStock ? worstStock.name : "-"} 
+                (${worstStock ? worstStock.gainPercent.toFixed(2) : 0}%)</p>
+        </div>
+    ` + html;
+
     savePortfolio(portfolio);
     document.getElementById("content").innerHTML = html;
-
-    // Auto refresh every 30 seconds
-    setTimeout(showPortfolio, 30000);
 }
 
 /* ================= ADD STOCK ================= */
@@ -144,6 +176,7 @@ async function addStock() {
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
 
 
 
