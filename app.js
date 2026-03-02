@@ -234,6 +234,25 @@ function handleExcelUpload() {
 
     reader.readAsArrayBuffer(file);
 }
+async function showBenchmark() {
+
+    portfolio = loadPortfolio();
+
+    const invested = calculateTotalInvested(portfolio);
+    const current = calculateCurrentValue(portfolio);
+
+    const portfolioReturn =
+        invested > 0 ? ((current - invested) / invested) * 100 : 0;
+
+    const niftyPrice = await fetchLivePrice("^NSEI");
+
+    document.getElementById("content").innerHTML = `
+        <h2>Benchmark Comparison</h2>
+        <p>Your Portfolio Return: ${portfolioReturn.toFixed(2)}%</p>
+        <p>Nifty Current Level: ₹${niftyPrice || "Unavailable"}</p>
+        <p>(Full return tracking requires historical data — can add next)</p>
+    `;
+}
 function showAllocation() {
     portfolio = loadPortfolio();
 
@@ -268,4 +287,5 @@ function showAllocation() {
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
 
