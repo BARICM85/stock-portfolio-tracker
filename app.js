@@ -13,7 +13,7 @@ async function fetchLivePrice(symbol) {
         const data = await response.json();
 
         if (data && data.price !== undefined) {
-            return Number(data.price);   // FORCE number conversion
+            return Number(data.price);
         }
 
         return null;
@@ -23,6 +23,7 @@ async function fetchLivePrice(symbol) {
         return null;
     }
 }
+
 /* ================= DASHBOARD ================= */
 
 function showDashboard() {
@@ -150,34 +151,90 @@ async function addStock() {
     const name = nameInput.toUpperCase();
     const symbol = name + ".NS";
 
-    let livePrice = price;
-
-    try {
-        const fetchedPrice = await fetchLivePrice(symbol);
-        if (fetchedPrice !== null && !isNaN(fetchedPrice)) {
-            livePrice = fetchedPrice;
-        }
-    } catch (err) {
-        console.log("Live fetch failed, using buy price.");
+    // Prevent duplicate stock
+    const existing = portfolio.find(s => s.name === name);
+    if (existing) {
+        existing.quantity += quantity;
+        existing.price = price;
+    } else {
+        portfolio.push({
+            name,
+            symbol,
+            quantity,
+            price,
+            currentPrice: price
+        });
     }
-
-    portfolio.push({
-        name,
-        symbol,
-        quantity,
-        price,
-        currentPrice: livePrice
-    });
 
     savePortfolio(portfolio);
     showPortfolio();
 }
 
+/* ================= EXCEL UPLOAD ================= */
+
+function showUpload() {
+    document.getElementById("content").innerHTML = `
+        <h2>Upload Excel Portfolio</h2>
+        <p>Excel format: name | quantity | price</p>
+        <input type="file" id="excelFile" accept=".xlsx,.xls">
+        <br><br>
+        <button onclick="handleExcelUpload()">Upload</button>
+    `;
+}
+
+function handleExcelUpload() {
+    const fileInput = document.getElementById("excelFile");
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("Please select a file.");
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+
+        const json = XLSX.utils.sheet_to_json(sheet);
+
+        portfolio = loadPortfolio();
+
+        json.forEach(row => {
+            const name = String(row.name || "").toUpperCase();
+            const quantity = parseFloat(row.quantity);
+            const price = parseFloat(row.price);
+
+            if (!name || isNaN(quantity) || isNaN(price)) return;
+
+            const existing = portfolio.find(s => s.name === name);
+
+            if (existing) {
+                existing.quantity += quantity;
+                existing.price = price;
+            } else {
+                portfolio.push({
+                    name,
+                    symbol: name + ".NS",
+                    quantity,
+                    price,
+                    currentPrice: price
+                });
+            }
+        });
+
+        savePortfolio(portfolio);
+        alert("Excel uploaded successfully!");
+        showPortfolio();
+    };
+
+    reader.readAsArrayBuffer(file);
+}
+
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
-
-
-
-
-
