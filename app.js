@@ -253,6 +253,31 @@ async function showBenchmark() {
         <p>(Full return tracking requires historical data — can add next)</p>
     `;
 }
+function showRisk() {
+
+    portfolio = loadPortfolio();
+
+    let total = calculateCurrentValue(portfolio);
+
+    let highestWeight = 0;
+
+    portfolio.forEach(stock => {
+        const weight = (stock.quantity * stock.currentPrice) / total;
+        if (weight > highestWeight) highestWeight = weight;
+    });
+
+    let riskLevel = "Low";
+
+    if (highestWeight > 0.50) riskLevel = "High";
+    else if (highestWeight > 0.30) riskLevel = "Moderate";
+
+    document.getElementById("content").innerHTML = `
+        <h2>Risk Analysis</h2>
+        <p>Highest Stock Allocation: ${(highestWeight * 100).toFixed(2)}%</p>
+        <p>Risk Level: <strong>${riskLevel}</strong></p>
+        <p>(Add historical volatility later for advanced risk metrics)</p>
+    `;
+}
 function showAllocation() {
     portfolio = loadPortfolio();
 
@@ -287,5 +312,6 @@ function showAllocation() {
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
 
 
