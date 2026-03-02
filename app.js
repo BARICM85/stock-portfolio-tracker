@@ -5,7 +5,7 @@ let portfolio = loadPortfolio();
 async function fetchLivePrice(symbol) {
     try {
         const response = await fetch(
-            "https://stock-price-proxy-rktn.onrender.com/price/" + symbol
+            "https://stock-price-proxy-2owf.onrender.com/price/" + symbol
         );
 
         if (!response.ok) {
@@ -146,4 +146,5 @@ async function addStock() {
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
 
