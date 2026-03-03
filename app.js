@@ -417,6 +417,17 @@ onAuthStateChanged(auth, async (user) => {
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+window.showDashboard = showDashboard;
+window.showPortfolio = showPortfolio;
+window.showAddStock = showAddStock;
+window.showUpload = showUpload;
+window.showAllocation = showAllocation;
+window.showBenchmark = showBenchmark;
+window.showRisk = showRisk;
+window.downloadExcel = downloadExcel;
+window.showLogin = showLogin;
+window.register = register;
+window.login = login;
 
 
 
