@@ -10,6 +10,8 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+let portfolio = loadPortfolio();
+
 import {
   getFirestore,
   doc,
@@ -422,6 +424,7 @@ window.downloadExcel = downloadExcel;
 window.showLogin = showLogin;
 window.register = register;
 window.login = login;
+
 
 
 
