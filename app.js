@@ -1,11 +1,5 @@
 import { loadPortfolio, savePortfolio } from "./storage.js";
-export function loadPortfolio() {
-    return JSON.parse(localStorage.getItem("portfolio")) || [];
-}
 
-export function savePortfolio(portfolio) {
-    localStorage.setItem("portfolio", JSON.stringify(portfolio));
-}
 // 🔥 Firebase Imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
@@ -428,6 +422,7 @@ window.downloadExcel = downloadExcel;
 window.showLogin = showLogin;
 window.register = register;
 window.login = login;
+
 
 
 
