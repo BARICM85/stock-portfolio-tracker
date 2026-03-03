@@ -161,6 +161,7 @@ function deleteStock(index) {
 }
 
 async function showPortfolio() {
+
     portfolio = loadPortfolio();
 
     let html = "<h2>Portfolio</h2>";
@@ -171,14 +172,16 @@ async function showPortfolio() {
     let bestStock = null;
     let worstStock = null;
 
-    for (let stock of portfolio) {
+    for (let index = 0; index < portfolio.length; index++) {
+
+        let stock = portfolio[index];
 
         try {
             const livePrice = await fetchLivePrice(stock.symbol);
             if (livePrice !== null && !isNaN(livePrice)) {
                 stock.currentPrice = livePrice;
             }
-        } catch {}
+        } catch (error) {}
 
         const invested = stock.quantity * stock.price;
         const current = stock.quantity * stock.currentPrice;
@@ -197,44 +200,20 @@ async function showPortfolio() {
         }
 
         const color = gain >= 0 ? "green" : "red";
-      
-for (let index = 0; index < portfolio.length; index++) 
 
-    let stock = portfolio[index];
-
-    try {
-        const livePrice = await fetchLivePrice(stock.symbol);
-        if (livePrice !== null && !isNaN(livePrice)) {
-            stock.currentPrice = livePrice;
-        }
-    } catch {}
-
-    const invested = stock.quantity * stock.price;
-    const current = stock.quantity * stock.currentPrice;
-    const gain = current - invested;
-    const gainPercent = invested > 0 ? (gain / invested) * 100 : 0;
-
-    totalInvested += invested;
-    totalCurrent += current;
-
-    if (!bestStock || gainPercent > bestStock.gainPercent) {
-        bestStock = { name: stock.name, gainPercent };
-    }
-
-    if (!worstStock || gainPercent < worstStock.gainPercent) {
-        worstStock = { name: stock.name, gainPercent };
-    }
-
-    const color = gain >= 0 ? "green" : "red";
         html += `
             <p>
-            <strong>${stock.name}</strong>
-            | Qty: ${stock.quantity}
-            | Buy: ₹${stock.price}
-            | Live: ₹${stock.currentPrice}
-            | <span style="color:${color}">
-              P/L: ₹${gain.toFixed(2)} (${gainPercent.toFixed(2)}%)
-              </span>
+                <strong>${stock.name}</strong>
+                | Qty: ${stock.quantity}
+                | Buy: ₹${stock.price}
+                | Live: ₹${stock.currentPrice}
+                | <span style="color:${color}">
+                    P/L: ₹${gain.toFixed(2)} (${gainPercent.toFixed(2)}%)
+                  </span>
+                | <button onclick="deleteStock(${index})"
+                    style="margin-left:10px;background:red;color:white;border:none;padding:5px 8px;border-radius:4px;">
+                    Delete
+                  </button>
             </p>
         `;
     }
@@ -254,14 +233,19 @@ for (let index = 0; index < portfolio.length; index++)
             <p style="color:${summaryColor}">
                 Total P/L: ₹${totalGain.toFixed(2)} (${totalPercent}%)
             </p>
-            <p>Best Performer: ${bestStock ? bestStock.name : "-"} 
-                (${bestStock ? bestStock.gainPercent.toFixed(2) : 0}%)</p>
-            <p>Worst Performer: ${worstStock ? worstStock.name : "-"} 
-                (${worstStock ? worstStock.gainPercent.toFixed(2) : 0}%)</p>
+            <p>
+                Best Performer: ${bestStock ? bestStock.name : "-"}
+                (${bestStock ? bestStock.gainPercent.toFixed(2) : 0}%)
+            </p>
+            <p>
+                Worst Performer: ${worstStock ? worstStock.name : "-"}
+                (${worstStock ? worstStock.gainPercent.toFixed(2) : 0}%)
+            </p>
         </div>
     ` + html;
 
     savePortfolio(portfolio);
+
     document.getElementById("content").innerHTML = html;
 }
 
@@ -494,6 +478,7 @@ window.showLogin = showLogin;
 window.register = register;
 window.login = login;
 window.deleteStock = deleteStock;
+
 
 
 
