@@ -412,7 +412,14 @@ onAuthStateChanged(auth, async (user) => {
 });
 /* ================= INITIAL LOAD ================= */
 
-showDashboard();
+/* ================= INITIAL LOAD ================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+    showDashboard();
+});
+
+/* ================= EXPOSE TO HTML ================= */
+
 window.showDashboard = showDashboard;
 window.showPortfolio = showPortfolio;
 window.showAddStock = showAddStock;
