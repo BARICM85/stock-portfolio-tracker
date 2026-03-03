@@ -30,6 +30,17 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+async function savePortfolioToCloud() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    await setDoc(doc(db, "portfolios", user.uid), {
+        stocks: portfolio
+    });
+
+    console.log("Portfolio saved to cloud!");
+}
+
 /* ================= LIVE PRICE FETCH ================= */
 
 async function fetchLivePrice(symbol) {
@@ -61,7 +72,7 @@ async function register() {
     const password = document.getElementById("password").value;
 
     try {
-        await firebaseHelpers.createUserWithEmailAndPassword(auth, email, password);
+        await createUserWithEmailAndPassword(auth, email, password);
         alert("Registered successfully!");
     } catch (error) {
         alert(error.message);
@@ -73,7 +84,7 @@ async function login() {
     const password = document.getElementById("password").value;
 
     try {
-        await firebaseHelpers.signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth, email, password);
         alert("Login successful!");
     } catch (error) {
         alert(error.message);
@@ -229,6 +240,7 @@ async function addStock() {
     }
 
     savePortfolio(portfolio);
+    await savePortfolioToCloud();
     showPortfolio();
 }
 
@@ -382,11 +394,10 @@ function showAllocation() {
         }
     });
 }
-firebaseHelpers.onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, async (user) => {
     if (user) {
-
-        const docRef = firebaseHelpers.doc(db, "portfolios", user.uid);
-        const snapshot = await firebaseHelpers.getDoc(docRef);
+        const docRef = doc(db, "portfolios", user.uid);
+        const snapshot = await getDoc(docRef);
 
         if (snapshot.exists()) {
             const cloudData = snapshot.data().stocks;
@@ -394,12 +405,12 @@ firebaseHelpers.onAuthStateChanged(auth, async (user) => {
             portfolio = cloudData;
             showPortfolio();
         }
-
     }
 });
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
 
 
 
