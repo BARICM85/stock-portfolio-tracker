@@ -352,9 +352,25 @@ function showAllocation() {
         }
     });
 }
+firebaseHelpers.onAuthStateChanged(auth, async (user) => {
+    if (user) {
+
+        const docRef = firebaseHelpers.doc(db, "portfolios", user.uid);
+        const snapshot = await firebaseHelpers.getDoc(docRef);
+
+        if (snapshot.exists()) {
+            const cloudData = snapshot.data().stocks;
+            localStorage.setItem("portfolio", JSON.stringify(cloudData));
+            portfolio = cloudData;
+            showPortfolio();
+        }
+
+    }
+});
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
 
 
 
