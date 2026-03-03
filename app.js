@@ -410,7 +410,6 @@ onAuthStateChanged(auth, async (user) => {
         }
     }
 });
-/* ================= INITIAL LOAD ================= */
 
 /* ================= INITIAL LOAD ================= */
 
@@ -431,6 +430,7 @@ window.downloadExcel = downloadExcel;
 window.showLogin = showLogin;
 window.register = register;
 window.login = login;
+
 
 
 
