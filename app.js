@@ -31,7 +31,7 @@ async function register() {
     const password = document.getElementById("password").value;
 
     try {
-        await auth.createUserWithEmailAndPassword(email, password);
+        await firebaseHelpers.createUserWithEmailAndPassword(auth, email, password);
         alert("Registered successfully!");
     } catch (error) {
         alert(error.message);
@@ -43,9 +43,8 @@ async function login() {
     const password = document.getElementById("password").value;
 
     try {
-        await auth.signInWithEmailAndPassword(email, password);
+        await firebaseHelpers.signInWithEmailAndPassword(auth, email, password);
         alert("Login successful!");
-        loadPortfolioFromCloud();
     } catch (error) {
         alert(error.message);
     }
@@ -356,6 +355,7 @@ function showAllocation() {
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
 
 
 
