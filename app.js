@@ -1,4 +1,34 @@
 let portfolio = loadPortfolio();
+// 🔥 Firebase Imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// 🔥 Your Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyAuJk0uxRGrnFZPocxBAKnIynQAW5pFtr8",
+  authDomain: "stock-portfolio-app-244ff.firebaseapp.com",
+  projectId: "stock-portfolio-app-244ff",
+  storageBucket: "stock-portfolio-app-244ff.firebasestorage.app",
+  messagingSenderId: "142779739862",
+  appId: "1:142779739862:web:593b35d996c7f3fe692377"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 /* ================= LIVE PRICE FETCH ================= */
 
@@ -370,6 +400,7 @@ firebaseHelpers.onAuthStateChanged(auth, async (user) => {
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
 
 
 
