@@ -26,6 +26,31 @@ async function fetchLivePrice(symbol) {
 
 /* ================= DASHBOARD ================= */
 
+async function register() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+        await auth.createUserWithEmailAndPassword(email, password);
+        alert("Registered successfully!");
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+async function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+        await auth.signInWithEmailAndPassword(email, password);
+        alert("Login successful!");
+        loadPortfolioFromCloud();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
 function showDashboard() {
     portfolio = loadPortfolio();
 
@@ -331,6 +356,7 @@ function showAllocation() {
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
 
 
 
