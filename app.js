@@ -198,7 +198,7 @@ async function showPortfolio() {
 
         const color = gain >= 0 ? "green" : "red";
       
-for (let index = 0; index < portfolio.length; index++) {
+for (let index = 0; index < portfolio.length; index++) }
 
     let stock = portfolio[index];
 
@@ -494,6 +494,7 @@ window.showLogin = showLogin;
 window.register = register;
 window.login = login;
 window.deleteStock = deleteStock;
+
 
 
 
