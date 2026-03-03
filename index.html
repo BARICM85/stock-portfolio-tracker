@@ -35,7 +35,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
-    const firebaseConfig = {
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
   apiKey: "AIzaSyAuJk0uxRGrnFZPocxBAKnIynQAW5pFtr8",
   authDomain: "stock-portfolio-app-244ff.firebaseapp.com",
   projectId: "stock-portfolio-app-244ff",
@@ -44,6 +52,10 @@
   appId: "1:142779739862:web:593b35d996c7f3fe692377",
   measurementId: "G-72J23257GT"
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
     <script src="app.js"></script>
 
     <!-- Auto Load Portfolio on First Visit -->
@@ -53,6 +65,7 @@
 
 </body>
 </html>
+
 
 
 
