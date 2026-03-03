@@ -46,7 +46,15 @@ function showDashboard() {
         </p>
     `;
 }
-
+function showLogin() {
+    document.getElementById("content").innerHTML = `
+        <h2>Login</h2>
+        <input id="email" placeholder="Email">
+        <input id="password" type="password" placeholder="Password">
+        <button onclick="register()">Register</button>
+        <button onclick="login()">Login</button>
+    `;
+}
 /* ================= PORTFOLIO ================= */
 
 async function showPortfolio() {
@@ -323,6 +331,7 @@ function showAllocation() {
 /* ================= INITIAL LOAD ================= */
 
 showDashboard();
+
 
 
 
