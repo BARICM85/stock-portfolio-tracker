@@ -40,8 +40,20 @@
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAuJk0uxRGrnFZPocxBAKnIynQAW5pFtr8",
@@ -54,8 +66,19 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
 window.auth = getAuth(app);
 window.db = getFirestore(app);
+
+window.firebaseHelpers = {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  doc,
+  setDoc,
+  getDoc
+};
 
 </script>
     <script src="app.js"></script>
@@ -67,6 +90,7 @@ window.db = getFirestore(app);
 
 </body>
 </html>
+
 
 
 
