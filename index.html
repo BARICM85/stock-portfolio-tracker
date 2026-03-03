@@ -30,55 +30,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <!-- Core Scripts -->
-    <script src="storage.js"></script>
-    <script src="portfolioEngine.js"></script>
+    <script type="module" src="app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
     <!-- Firebase SDK -->
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-import { 
-  getFirestore, 
-  doc, 
-  setDoc, 
-  getDoc 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAuJk0uxRGrnFZPocxBAKnIynQAW5pFtr8",
-  authDomain: "stock-portfolio-app-244ff.firebaseapp.com",
-  projectId: "stock-portfolio-app-244ff",
-  storageBucket: "stock-portfolio-app-244ff.firebasestorage.app",
-  messagingSenderId: "142779739862",
-  appId: "1:142779739862:web:593b35d996c7f3fe692377",
-  measurementId: "G-72J23257GT"
-};
-
-const app = initializeApp(firebaseConfig);
-
-window.auth = getAuth(app);
-window.db = getFirestore(app);
-
-window.firebaseHelpers = {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut,
-  doc,
-  setDoc,
-  getDoc
-};
 
 </script>
     <script src="app.js"></script>
@@ -90,6 +47,7 @@ window.firebaseHelpers = {
 
 </body>
 </html>
+
 
 
 
