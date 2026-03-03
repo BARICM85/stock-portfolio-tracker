@@ -94,6 +94,19 @@ async function login() {
     }
 }
 
+/* ================= CALCULATION HELPERS ================= */
+
+function calculateTotalInvested(portfolio) {
+    return portfolio.reduce((total, stock) => {
+        return total + (Number(stock.quantity) * Number(stock.price));
+    }, 0);
+}
+
+function calculateCurrentValue(portfolio) {
+    return portfolio.reduce((total, stock) => {
+        return total + (Number(stock.quantity) * Number(stock.currentPrice || stock.price));
+    }, 0);
+}
 function showDashboard() {
     portfolio = loadPortfolio();
 
@@ -430,6 +443,7 @@ window.downloadExcel = downloadExcel;
 window.showLogin = showLogin;
 window.register = register;
 window.login = login;
+
 
 
 
