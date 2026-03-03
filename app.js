@@ -71,13 +71,25 @@ async function fetchLivePrice(symbol) {
 /* ================= DASHBOARD ================= */
 
 async function register() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!email || !password) {
+        alert("Please enter email and password");
+        return;
+    }
+
+    if (password.length < 6) {
+        alert("Password must be at least 6 characters");
+        return;
+    }
 
     try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        alert("Registered successfully!");
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        alert("Registration successful!");
+        showDashboard();
     } catch (error) {
+        console.error(error);
         alert(error.message);
     }
 }
@@ -443,6 +455,7 @@ window.downloadExcel = downloadExcel;
 window.showLogin = showLogin;
 window.register = register;
 window.login = login;
+
 
 
 
