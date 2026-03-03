@@ -150,6 +150,16 @@ function showLogin() {
 }
 /* ================= PORTFOLIO ================= */
 
+function deleteStock(index) {
+
+    if (!confirm("Are you sure you want to delete this stock?")) return;
+
+    portfolio.splice(index, 1);
+
+    savePortfolio(portfolio);
+    showPortfolio();
+}
+
 async function showPortfolio() {
     portfolio = loadPortfolio();
 
@@ -187,7 +197,34 @@ async function showPortfolio() {
         }
 
         const color = gain >= 0 ? "green" : "red";
+for (let index = 0; index < portfolio.length; index++) {
 
+    let stock = portfolio[index];
+
+    try {
+        const livePrice = await fetchLivePrice(stock.symbol);
+        if (livePrice !== null && !isNaN(livePrice)) {
+            stock.currentPrice = livePrice;
+        }
+    } catch {}
+
+    const invested = stock.quantity * stock.price;
+    const current = stock.quantity * stock.currentPrice;
+    const gain = current - invested;
+    const gainPercent = invested > 0 ? (gain / invested) * 100 : 0;
+
+    totalInvested += invested;
+    totalCurrent += current;
+
+    if (!bestStock || gainPercent > bestStock.gainPercent) {
+        bestStock = { name: stock.name, gainPercent };
+    }
+
+    if (!worstStock || gainPercent < worstStock.gainPercent) {
+        worstStock = { name: stock.name, gainPercent };
+    }
+
+    const color = gain >= 0 ? "green" : "red";
         html += `
             <p>
             <strong>${stock.name}</strong>
@@ -455,6 +492,8 @@ window.downloadExcel = downloadExcel;
 window.showLogin = showLogin;
 window.register = register;
 window.login = login;
+window.deleteStock = deleteStock;
+
 
 
 
