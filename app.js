@@ -252,12 +252,9 @@ async function showPortfolio() {
     let totalInvested = 0;
     let totalCurrent = 0;
 
-    let bestStock = null;
-    let worstStock = null;
+    let analysis = [];
 
-    for (let index = 0; index < portfolio.length; index++) {
-
-        let stock = portfolio[index];
+    for (let stock of portfolio) {
 
         try {
             const livePrice = await fetchLivePrice(stock.symbol);
@@ -266,7 +263,7 @@ async function showPortfolio() {
             }
         } catch (error) {}
 
-        const invested = stock.totalInvestment;
+        const invested = stock.averagePrice * stock.quantity;
         const current = stock.quantity * stock.currentPrice;
         const gain = current - invested;
         const gainPercent = invested > 0 ? (gain / invested) * 100 : 0;
@@ -274,104 +271,93 @@ async function showPortfolio() {
         totalInvested += invested;
         totalCurrent += current;
 
-        if (!bestStock || gainPercent > bestStock.gainPercent) {
-            bestStock = { name: stock.script, gainPercent };
-        }
-
-        if (!worstStock || gainPercent < worstStock.gainPercent) {
-            worstStock = { name: stock.script, gainPercent };
-        }
-
-        const color = gain >= 0 ? "green" : "red";
+        analysis.push({
+            name: stock.script || stock.name,
+            invested,
+            current,
+            gain,
+            gainPercent
+        });
 
         html += `
-    <div class="card stock-card">
-        <div class="stock-header">
-            <h3>${stock.script}</h3>
-            <button class="delete-btn" onclick="deleteStock(${index})">
-                Delete
-            </button>
-        </div>
-
-        <div class="stock-grid">
-            <div>
-                <span class="label">Quantity</span>
-                <span>${stock.quantity}</span>
-            </div>
-
-           <div>
-                <span class="label">Avg Buy</span>
-                <span>₹${stock.averagePrice?.toFixed(2) || 0}</span>
-            </div>
-
-            <div>
-                <span class="label">Live Price</span>
-                <span>₹${stock.currentPrice}</span>
-            </div>
-
-            <div>
-                <span class="label">P/L</span>
-                <span class="${gain >= 0 ? 'positive' : 'negative'}">
+            <div class="card stock-card">
+                <h3>${stock.script || stock.name}</h3>
+                <p>Qty: ${stock.quantity}</p>
+                <p>Avg Price: ₹${stock.averagePrice?.toFixed(2)}</p>
+                <p>Live Price: ₹${stock.currentPrice}</p>
+                <p class="${gain >= 0 ? 'positive' : 'negative'}">
                     ₹${gain.toFixed(2)} (${gainPercent.toFixed(2)}%)
-                </span>
+                </p>
             </div>
-        </div>
-    </div>
-`;
+        `;
     }
+
+    // 🔥 SORTING SECTION
+
+    const gainers = [...analysis]
+        .filter(s => s.gain > 0)
+        .sort((a, b) => b.gainPercent - a.gainPercent);
+
+    const losers = [...analysis]
+        .filter(s => s.gain < 0)
+        .sort((a, b) => a.gainPercent - b.gainPercent);
+
+    const topGainer = gainers[0];
+    const topLoser = losers[0];
 
     const totalGain = totalCurrent - totalInvested;
     const totalPercent = totalInvested > 0
         ? ((totalGain / totalInvested) * 100).toFixed(2)
         : 0;
 
-    const summaryColor = totalGain >= 0 ? "green" : "red";
+    html = `
+        <div class="card">
+            <h3>Portfolio Summary</h3>
+            <p>Total Invested: ₹${totalInvested.toFixed(2)}</p>
+            <p>Current Value: ₹${totalCurrent.toFixed(2)}</p>
+            <p class="${totalGain >= 0 ? 'positive' : 'negative'}">
+                Total P/L: ₹${totalGain.toFixed(2)} (${totalPercent}%)
+            </p>
 
-html = `
-    <div class="card">
-        <h3>Portfolio Summary</h3>
+            <hr>
 
-        <div class="summary-grid">
+            <h4>🏆 Top Gainer</h4>
+            <p>${topGainer ? topGainer.name + 
+                " (" + topGainer.gainPercent.toFixed(2) + "%)" : "-"}</p>
 
-            <div>
-                <span class="label">Total Invested</span>
-                <strong>₹${totalInvested.toFixed(2)}</strong>
-            </div>
-
-            <div>
-                <span class="label">Current Value</span>
-                <strong>₹${totalCurrent.toFixed(2)}</strong>
-            </div>
-
-            <div>
-                <span class="label">Total P/L</span>
-                <strong class="${totalGain >= 0 ? 'positive' : 'negative'}">
-                    ₹${totalGain.toFixed(2)} (${totalPercent}%)
-                </strong>
-            </div>
-
-            <div>
-                <span class="label">Best Performer</span>
-                <strong>
-                    ${bestStock ? bestStock.name : "-"}
-                    (${bestStock ? bestStock.gainPercent.toFixed(2) : 0}%)
-                </strong>
-            </div>
-
-            <div>
-                <span class="label">Worst Performer</span>
-                <strong>
-                    ${worstStock ? worstStock.name : "-"}
-                    (${worstStock ? worstStock.gainPercent.toFixed(2) : 0}%)
-                </strong>
-            </div>
-
+            <h4>💀 Top Loser</h4>
+            <p>${topLoser ? topLoser.name + 
+                " (" + topLoser.gainPercent.toFixed(2) + "%)" : "-"}</p>
         </div>
-    </div>
-` + html;
+
+        <div class="card">
+            <h3>📈 Gainers</h3>
+            ${
+                gainers.length > 0
+                ? gainers.map(s =>
+                    `<p class="positive">
+                        ${s.name} - ${s.gainPercent.toFixed(2)}%
+                    </p>`
+                  ).join("")
+                : "<p>No gainers</p>"
+            }
+        </div>
+
+        <div class="card">
+            <h3>📉 Losers</h3>
+            ${
+                losers.length > 0
+                ? losers.map(s =>
+                    `<p class="negative">
+                        ${s.name} - ${s.gainPercent.toFixed(2)}%
+                    </p>`
+                  ).join("")
+                : "<p>No losers</p>"
+            }
+        </div>
+    ` + html;
 
     savePortfolio(portfolio);
-
     document.getElementById("content").innerHTML = html;
 }
 
@@ -713,6 +699,7 @@ window.logout = logout;
 window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.showUpload = showUpload;
+
 
 
 
