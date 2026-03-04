@@ -409,30 +409,47 @@ async function addStock() {
 
 /* ================= EXCEL UPLOAD ================= */
 
-function showUpload() {
+function showUpload(type) {
+
+    activePortfolio = type;
+
     document.getElementById("content").innerHTML = `
-        <h2>Upload Trade Excel</h2>
+        <h2>Upload Trade Excel - ${type}</h2>
 
-        <div class="card">
-            <p><strong>Required Excel Columns:</strong></p>
-            <p>date | script | isin | exchange | type | quantity | price</p>
+        <p><strong>Required Columns:</strong></p>
+        <p>date | script | isin | exchange | type | quantity | price</p>
 
-            <p><strong>Example:</strong></p>
-            <p>2024-01-10 | TCS | INE467B01029 | NSE | BUY | 10 | 3500</p>
-        </div>
+        <p><strong>Example:</strong></p>
+        <p>2024-01-10 | TCS | INE467B01029 | NSE | BUY | 10 | 3500</p>
 
         <br>
 
-        <input type="file" id="excelFile" accept=".xlsx,.xls">
+        <input type="file" id="excelFile-${type}" accept=".xlsx,.xls">
+
         <br><br>
-        <button onclick="handleExcelUpload()">Upload</button>
+
+        <button onclick="handleExcelUpload('${type}')">
+            Upload
+        </button>
+
+        <br><br>
+
+        <button onclick="showPortfolio()">Back to Portfolio</button>
     `;
 }
 
-function handleExcelUpload(type)  {
+function handleExcelUpload(type) {
+
     activePortfolio = type;
     portfolio = loadPortfolio(type);
-    const fileInput = document.getElementById("excelFile");
+
+    const fileInput = document.getElementById("excelFile-" + type);
+
+    if (!fileInput || !fileInput.files.length) {
+        showToast("Please select a file.", "error");
+        return;
+    }
+
     const file = fileInput.files[0];
 
     if (!file) {
@@ -707,6 +724,7 @@ window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.showUpload = showUpload;
 window.switchPortfolio = switchPortfolio;
+
 
 
 
