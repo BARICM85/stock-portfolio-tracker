@@ -27,25 +27,6 @@ async function logout() {
     }
 }
 
-auth.onAuthStateChanged(user => {
-    const profileDiv = document.getElementById("profile");
-    const loginBtn = document.getElementById("loginBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    if (user) {
-        profileDiv.innerHTML = `
-            <img src="${user.photoURL || ''}">
-            <p>${user.displayName || user.email}</p>
-        `;
-        loginBtn.style.display = "none";
-        logoutBtn.style.display = "block";
-    } else {
-        profileDiv.innerHTML = "";
-        loginBtn.style.display = "block";
-        logoutBtn.style.display = "none";
-    }
-});
-
 import { loadPortfolio, savePortfolio } from "./storage.js";
 
 // 🔥 Firebase Imports
@@ -589,6 +570,7 @@ window.deleteStock = deleteStock;
 window.googleLogin = googleLogin;
 window.logout = logout;
 window.showToast = showToast;
+
 
 
 
