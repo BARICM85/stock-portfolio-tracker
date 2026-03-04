@@ -1,8 +1,37 @@
-export function loadPortfolio() {
-    const data = localStorage.getItem("portfolio");
-    return data ? JSON.parse(data) : [];
+const STORAGE_KEY = "allPortfolios";
+
+/* ================= LOAD ALL ================= */
+
+function loadAllPortfolios() {
+    const data = localStorage.getItem(STORAGE_KEY);
+
+    if (!data) {
+        return {
+            portfolioA: [],
+            portfolioB: []
+        };
+    }
+
+    return JSON.parse(data);
 }
 
-export function savePortfolio(portfolio) {
-    localStorage.setItem("portfolio", JSON.stringify(portfolio));
+/* ================= SAVE ALL ================= */
+
+function saveAllPortfolios(allPortfolios) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(allPortfolios));
+}
+
+/* ================= LOAD ONE ================= */
+
+export function loadPortfolio(type = "portfolioA") {
+    const all = loadAllPortfolios();
+    return all[type] || [];
+}
+
+/* ================= SAVE ONE ================= */
+
+export function savePortfolio(type, portfolio) {
+    const all = loadAllPortfolios();
+    all[type] = portfolio;
+    saveAllPortfolios(all);
 }
