@@ -4,15 +4,31 @@
     <title>Stock Portfolio Tracker</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111827">
+
+    <!-- Styles -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Excel Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
+
 <body>
 
-    <h1>📊 Stock Portfolio Tracker</h1>
+    <div class="sidebar">
 
-    <nav>
-        <button onclick="googleLogin()">Login with Google</button>
-        <button onclick="logout()">Logout</button>
+        <h1>📊 Portfolio</h1>
+
+        <!-- User Profile -->
+        <div id="profile" class="profile"></div>
+
+        <!-- Navigation -->
         <button onclick="showDashboard()">Dashboard</button>
         <button onclick="showPortfolio()">Portfolio</button>
         <button onclick="showAddStock()">Add Stock</button>
@@ -21,23 +37,34 @@
         <button onclick="showBenchmark()">Benchmark</button>
         <button onclick="showRisk()">Risk</button>
         <button onclick="downloadExcel()">Download Excel</button>
-        <button onclick="showLogin()">Login</button>
-    </nav>
 
-    <hr>
+        <hr style="margin:15px 0; border-color:#333;">
 
-    <div id="content"></div>
+        <!-- Auth Buttons -->
+        <button onclick="googleLogin()" id="loginBtn">
+            Login with Google
+        </button>
 
-    <!-- Excel Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+        <button onclick="logout()" id="logoutBtn" style="display:none;">
+            Logout
+        </button>
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </div>
 
-    <!-- 🔥 ONLY ONE SCRIPT: app.js as module -->
+    <div class="main">
+        <div id="content"></div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast"
+         style="position:fixed;bottom:20px;right:20px;
+                background:#111;color:white;
+                padding:10px 15px;border-radius:6px;
+                display:none;">
+    </div>
+
+    <!-- Your App Script -->
     <script type="module" src="app.js"></script>
 
 </body>
 </html>
-
-
