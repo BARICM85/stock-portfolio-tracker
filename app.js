@@ -27,19 +27,7 @@ async function logout() {
     }
 }
 import { loadPortfolio, savePortfolio } from "./storage.js";
-async function googleLogin() {
-    const provider = new GoogleAuthProvider();
 
-    try {
-        await signInWithPopup(auth, provider);
-        alert("Google Login Successful");
-        showDashboard();
-    } catch (error) {
-        alert(error.message);
-    }
-}
-
-window.googleLogin = googleLogin;
 // 🔥 Firebase Imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
@@ -520,6 +508,7 @@ window.login = login;
 window.deleteStock = deleteStock;
 window.googleLogin = googleLogin;
 window.logout = logout;
+
 
 
 
