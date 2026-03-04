@@ -250,7 +250,7 @@ async function showPortfolio() {
             }
         } catch (error) {}
 
-        const invested = stock.quantity * stock.price;
+        const invested = stock.totalInvestment;
         const current = stock.quantity * stock.currentPrice;
         const gain = current - invested;
         const gainPercent = invested > 0 ? (gain / invested) * 100 : 0;
@@ -259,11 +259,11 @@ async function showPortfolio() {
         totalCurrent += current;
 
         if (!bestStock || gainPercent > bestStock.gainPercent) {
-            bestStock = { name: stock.name, gainPercent };
+            bestStock = { name: stock.script, gainPercent };
         }
 
         if (!worstStock || gainPercent < worstStock.gainPercent) {
-            worstStock = { name: stock.name, gainPercent };
+            worstStock = { name: stock.script, gainPercent };
         }
 
         const color = gain >= 0 ? "green" : "red";
@@ -271,7 +271,7 @@ async function showPortfolio() {
         html += `
     <div class="card stock-card">
         <div class="stock-header">
-            <h3>${stock.name}</h3>
+            <h3>${stock.script}</h3>
             <button class="delete-btn" onclick="deleteStock(${index})">
                 Delete
             </button>
@@ -283,9 +283,9 @@ async function showPortfolio() {
                 <span>${stock.quantity}</span>
             </div>
 
-            <div>
-                <span class="label">Buy Price</span>
-                <span>₹${stock.price}</span>
+           <div>
+                <span class="label">Avg Buy</span>
+                <span>₹${stock.averagePrice?.toFixed(2) || 0}</span>
             </div>
 
             <div>
@@ -311,24 +311,48 @@ async function showPortfolio() {
 
     const summaryColor = totalGain >= 0 ? "green" : "red";
 
-    html = `
-        <div style="padding:15px;border:1px solid #ccc;margin-bottom:15px;">
-            <h3>Portfolio Summary</h3>
-            <p>Total Invested: ₹${totalInvested.toFixed(2)}</p>
-            <p>Total Current Value: ₹${totalCurrent.toFixed(2)}</p>
-            <p style="color:${summaryColor}">
-                Total P/L: ₹${totalGain.toFixed(2)} (${totalPercent}%)
-            </p>
-            <p>
-                Best Performer: ${bestStock ? bestStock.name : "-"}
-                (${bestStock ? bestStock.gainPercent.toFixed(2) : 0}%)
-            </p>
-            <p>
-                Worst Performer: ${worstStock ? worstStock.name : "-"}
-                (${worstStock ? worstStock.gainPercent.toFixed(2) : 0}%)
-            </p>
+html = `
+    <div class="card">
+        <h3>Portfolio Summary</h3>
+
+        <div class="summary-grid">
+
+            <div>
+                <span class="label">Total Invested</span>
+                <strong>₹${totalInvested.toFixed(2)}</strong>
+            </div>
+
+            <div>
+                <span class="label">Current Value</span>
+                <strong>₹${totalCurrent.toFixed(2)}</strong>
+            </div>
+
+            <div>
+                <span class="label">Total P/L</span>
+                <strong class="${totalGain >= 0 ? 'positive' : 'negative'}">
+                    ₹${totalGain.toFixed(2)} (${totalPercent}%)
+                </strong>
+            </div>
+
+            <div>
+                <span class="label">Best Performer</span>
+                <strong>
+                    ${bestStock ? bestStock.name : "-"}
+                    (${bestStock ? bestStock.gainPercent.toFixed(2) : 0}%)
+                </strong>
+            </div>
+
+            <div>
+                <span class="label">Worst Performer</span>
+                <strong>
+                    ${worstStock ? worstStock.name : "-"}
+                    (${worstStock ? worstStock.gainPercent.toFixed(2) : 0}%)
+                </strong>
+            </div>
+
         </div>
-    ` + html;
+    </div>
+` + html;
 
     savePortfolio(portfolio);
 
@@ -384,8 +408,12 @@ async function addStock() {
 
 function showUpload() {
     document.getElementById("content").innerHTML = `
-        <h2>Upload Excel Portfolio</h2>
-        <p>Excel format: name | quantity | price</p>
+        <h2>Upload Trade Excel</h2>
+        <p><strong>Required Excel Columns:</strong></p>
+        <p>date | script | isin | exchange | type | quantity | price</p>
+        <p>Example:</p>
+        <p>2024-01-10 | TCS | INE467B01029 | NSE | BUY | 10 | 3500</p>
+
         <input type="file" id="excelFile" accept=".xlsx,.xls">
         <br><br>
         <button onclick="handleExcelUpload()">Upload</button>
@@ -393,52 +421,92 @@ function showUpload() {
 }
 
 function handleExcelUpload() {
+
     const fileInput = document.getElementById("excelFile");
     const file = fileInput.files[0];
 
     if (!file) {
-        showToast("Please select a file.");
+        showToast("Please select a file.", "error");
         return;
     }
 
     const reader = new FileReader();
 
     reader.onload = function (e) {
+
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: "array" });
 
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
-
         const json = XLSX.utils.sheet_to_json(sheet);
 
         portfolio = loadPortfolio();
 
         json.forEach(row => {
-            const name = String(row.name || "").toUpperCase();
+
+            const script = String(row.script || "").toUpperCase();
+            const isin = String(row.isin || "");
+            const exchange = String(row.exchange || "").toUpperCase();
+            const type = String(row.type || "").toUpperCase();
             const quantity = parseFloat(row.quantity);
             const price = parseFloat(row.price);
 
-            if (!name || isNaN(quantity) || isNaN(price)) return;
+            if (!script || !type || isNaN(quantity) || isNaN(price)) return;
 
-            const existing = portfolio.find(s => s.name === name);
+            const symbol = exchange === "BSE"
+                ? script + ".BO"
+                : script + ".NS";
 
-            if (existing) {
-                existing.quantity += quantity;
-                existing.price = price;
-            } else {
-                portfolio.push({
-                    name,
-                    symbol: name + ".NS",
-                    quantity,
-                    price,
+            let existing = portfolio.find(s => s.script === script);
+
+            if (!existing) {
+                existing = {
+                    script,
+                    isin,
+                    exchange,
+                    symbol,
+                    quantity: 0,
+                    totalInvestment: 0,
+                    averagePrice: 0,
                     currentPrice: price
-                });
+                };
+                portfolio.push(existing);
             }
+
+            if (type === "BUY") {
+
+                existing.totalInvestment += quantity * price;
+                existing.quantity += quantity;
+
+            } else if (type === "SELL") {
+
+                existing.quantity -= quantity;
+
+                if (existing.quantity < 0) {
+                    existing.quantity = 0;
+                }
+
+                existing.totalInvestment = existing.averagePrice * existing.quantity;
+            }
+
+            if (existing.quantity > 0) {
+                existing.averagePrice =
+                    existing.totalInvestment / existing.quantity;
+            } else {
+                existing.averagePrice = 0;
+                existing.totalInvestment = 0;
+            }
+
         });
 
+        // Remove zero quantity stocks
+        portfolio = portfolio.filter(s => s.quantity > 0);
+
         savePortfolio(portfolio);
-        showToast("Excel uploaded successfully!");
+
+        showToast("Trades uploaded successfully!", "success");
+
         showPortfolio();
     };
 
@@ -589,6 +657,7 @@ window.deleteStock = deleteStock;
 window.googleLogin = googleLogin;
 window.logout = logout;
 window.showToast = showToast;
+
 
 
 
