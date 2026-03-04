@@ -39,7 +39,8 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-let portfolio = loadPortfolio();
+let activePortfolio = "portfolioA";
+let portfolio = loadPortfolio(activePortfolio);
 
 import {
   getFirestore,
@@ -239,7 +240,7 @@ function deleteStock(index) {
 
     portfolio.splice(index, 1);
 
-    savePortfolio(portfolio);
+    savePortfolio(activePortfolio, portfolio);
     showPortfolio();
 }
 
@@ -357,7 +358,7 @@ async function showPortfolio() {
         </div>
     ` + html;
 
-    savePortfolio(portfolio);
+    savePortfolio(activePortfolio, portfolio);
     document.getElementById("content").innerHTML = html;
 }
 
@@ -401,7 +402,7 @@ async function addStock() {
         });
     }
 
-    savePortfolio(portfolio);
+    savePortfolio(activePortfolio, portfolio);
     await savePortfolioToCloud();
     showPortfolio();
 }
@@ -428,8 +429,9 @@ function showUpload() {
     `;
 }
 
-function handleExcelUpload() {
-
+function handleExcelUpload(type)  {
+    activePortfolio = type;
+    portfolio = loadPortfolio(type);
     const fileInput = document.getElementById("excelFile");
     const file = fileInput.files[0];
 
@@ -449,7 +451,6 @@ function handleExcelUpload() {
         const sheet = workbook.Sheets[sheetName];
         const json = XLSX.utils.sheet_to_json(sheet);
 
-        portfolio = loadPortfolio();
 
         json.forEach(row => {
 
@@ -505,7 +506,7 @@ function handleExcelUpload() {
 
         portfolio = portfolio.filter(s => s.quantity > 0);
 
-        savePortfolio(portfolio);
+        savePortfolio(activePortfolio, portfolio);
 
         showToast("Trades uploaded successfully!", "success");
 
@@ -674,6 +675,12 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+function switchPortfolio(type) {
+    activePortfolio = type;
+    portfolio = loadPortfolio(type);
+    showPortfolio();
+}
+
 /* ================= INITIAL LOAD ================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -699,6 +706,8 @@ window.logout = logout;
 window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.showUpload = showUpload;
+window.switchPortfolio = switchPortfolio;
+
 
 
 
