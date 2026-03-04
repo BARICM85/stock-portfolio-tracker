@@ -737,8 +737,8 @@ window.googleLogin = googleLogin;
 window.logout = logout;
 window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
-window.showUpload = showUpload;
 window.switchPortfolio = switchPortfolio;
+
 
 
 
