@@ -293,7 +293,8 @@ async function showPortfolio() {
         </p>
 
     </div>
-`;
+      `;
+    }
 
       function deleteStock(type, index) {
 
@@ -738,6 +739,7 @@ window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.showUpload = showUpload;
 window.switchPortfolio = switchPortfolio;
+
 
 
 
