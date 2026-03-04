@@ -11,19 +11,19 @@ const provider = new GoogleAuthProvider();
 async function googleLogin() {
     try {
         await signInWithPopup(auth, provider);
-        alert("Google Login Successful!");
+        showToast("Google Login Successful!");
     } catch (error) {
-        alert(error.message);
+        showToast(error.message);
     }
 }
 
 async function logout() {
     try {
         await signOut(auth);
-        alert("Logged out successfully!");
+        showToast("Logged out successfully!");
         showDashboard();
     } catch (error) {
-        alert(error.message);
+        showToast(error.message);
     }
 }
 
@@ -123,22 +123,22 @@ async function register() {
     const password = document.getElementById("password").value.trim();
 
     if (!email || !password) {
-        alert("Please enter email and password");
+        showToast("Please enter email and password");
         return;
     }
 
     if (password.length < 6) {
-        alert("Password must be at least 6 characters");
+        showToast("Password must be at least 6 characters");
         return;
     }
 
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        alert("Registration successful!");
+        showToast("Registration successful!");
         showDashboard();
     } catch (error) {
         console.error(error);
-        alert(error.message);
+        showToast(error.message);
     }
 }
 
@@ -148,9 +148,9 @@ async function login() {
 
     try {
         await signInWithEmailAndPassword(auth, email, password);
-        alert("Login successful!");
+        showToast("Login successful!");
     } catch (error) {
-        alert(error.message);
+        showToast(error.message);
     }
 }
 
@@ -334,7 +334,7 @@ async function addStock() {
     const price = parseFloat(document.getElementById("price").value);
 
     if (!nameInput || isNaN(quantity) || isNaN(price)) {
-        alert("Please fill all fields correctly.");
+        showToast("Please fill all fields correctly.");
         return;
     }
 
@@ -378,7 +378,7 @@ function handleExcelUpload() {
     const file = fileInput.files[0];
 
     if (!file) {
-        alert("Please select a file.");
+        showToast("Please select a file.");
         return;
     }
 
@@ -419,18 +419,34 @@ function handleExcelUpload() {
         });
 
         savePortfolio(portfolio);
-        alert("Excel uploaded successfully!");
+        showToast("Excel uploaded successfully!");
         showPortfolio();
     };
 
     reader.readAsArrayBuffer(file);
 }
-function showToast(message) {
+
+function showToast(message, type = "info") {
+
     const toast = document.getElementById("toast");
+
     toast.innerText = message;
+
+    if (type === "success") {
+        toast.style.background = "#16a34a";
+    } else if (type === "error") {
+        toast.style.background = "#dc2626";
+    } else {
+        toast.style.background = "#111827";
+    }
+
     toast.style.display = "block";
-    setTimeout(() => toast.style.display = "none", 3000);
+
+    setTimeout(() => {
+        toast.style.display = "none";
+    }, 3000);
 }
+
 async function showBenchmark() {
 
     portfolio = loadPortfolio();
@@ -553,6 +569,8 @@ window.login = login;
 window.deleteStock = deleteStock;
 window.googleLogin = googleLogin;
 window.logout = logout;
+window.showToast = showToast;
+
 
 
 
