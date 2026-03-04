@@ -234,16 +234,6 @@ function showLogin() {
 }
 /* ================= PORTFOLIO ================= */
 
-function deleteStock(index) {
-
-    if (!confirm("Are you sure you want to delete this stock?")) return;
-
-    portfolio.splice(index, 1);
-
-    savePortfolio(activePortfolio, portfolio);
-    showPortfolio();
-}
-
 async function showPortfolio() {
 
     portfolio = loadPortfolio();
@@ -255,7 +245,9 @@ async function showPortfolio() {
 
     let analysis = [];
 
-    for (let stock of portfolio) {
+    for (let index = 0; index < portfolio.length; index++) {
+
+    let stock = portfolio[index];
 
         try {
             const livePrice = await fetchLivePrice(stock.symbol);
@@ -281,18 +273,40 @@ async function showPortfolio() {
         });
 
         html += `
-            <div class="card stock-card">
-                <h3>${stock.script || stock.name}</h3>
-                <p>Qty: ${stock.quantity}</p>
-                <p>Avg Price: ₹${stock.averagePrice?.toFixed(2)}</p>
-                <p>Live Price: ₹${stock.currentPrice}</p>
-                <p class="${gain >= 0 ? 'positive' : 'negative'}">
-                    ₹${gain.toFixed(2)} (${gainPercent.toFixed(2)}%)
-                </p>
-            </div>
-        `;
-    }
+    <div class="card stock-card">
 
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3>${stock.script || stock.name}</h3>
+
+            <button onclick="deleteStock('${activePortfolio}', ${index})"
+                style="background:#dc2626;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;">
+                Delete
+            </button>
+        </div>
+
+        <p>Qty: ${stock.quantity}</p>
+        <p>Avg Price: ₹${stock.averagePrice?.toFixed(2) || 0}</p>
+        <p>Live Price: ₹${stock.currentPrice}</p>
+
+        <p class="${gain >= 0 ? 'positive' : 'negative'}">
+            ₹${gain.toFixed(2)} (${gainPercent.toFixed(2)}%)
+        </p>
+
+    </div>
+`;
+
+      function deleteStock(type, index) {
+
+    if (!confirm("Delete this stock?")) return;
+
+    let portfolio = loadPortfolio(type);
+
+    portfolio.splice(index, 1);
+
+    savePortfolio(type, portfolio);
+
+    showPortfolio();
+}
     // 🔥 SORTING SECTION
 
     const gainers = [...analysis]
@@ -724,6 +738,7 @@ window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.showUpload = showUpload;
 window.switchPortfolio = switchPortfolio;
+
 
 
 
