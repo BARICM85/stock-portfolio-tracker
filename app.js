@@ -507,11 +507,49 @@ function handleExcelUpload() {
 
         showToast("Trades uploaded successfully!", "success");
 
-        showPortfolio();
-    };
+let previewRows = json.slice(0, 5).map(row => `
+    <tr>
+        <td>${row.date || row.Date || ""}</td>
+        <td>${row.script || row.Script || ""}</td>
+        <td>${row.isin || row.ISIN || ""}</td>
+        <td>${row.exchange || row.Exchange || ""}</td>
+        <td>${row.type || row.Type || ""}</td>
+        <td>${row.quantity || row.Quantity || ""}</td>
+        <td>${row.price || row.Price || ""}</td>
+    </tr>
+`).join("");
 
-    reader.readAsArrayBuffer(file);
-}
+document.getElementById("content").innerHTML = `
+    <div class="card">
+        <h3>Excel Upload Successful</h3>
+
+        <p><strong>Required Columns:</strong></p>
+        <p>date | script | isin | exchange | type | quantity | price</p>
+
+        <p><strong>Example:</strong></p>
+        <p>2024-01-10 | TCS | INE467B01029 | NSE | BUY | 10 | 3500</p>
+
+        <br>
+
+        <h4>Uploaded Preview (First 5 Rows)</h4>
+
+        <table border="1" cellpadding="5" style="border-collapse:collapse;width:100%;">
+            <tr>
+                <th>Date</th>
+                <th>Script</th>
+                <th>ISIN</th>
+                <th>Exchange</th>
+                <th>Type</th>
+                <th>Qty</th>
+                <th>Price</th>
+            </tr>
+            ${previewRows}
+        </table>
+
+        <br>
+        <button onclick="showPortfolio()">Go to Portfolio</button>
+    </div>
+`;
 
 function showToast(message, type = "info") {
 
@@ -659,6 +697,7 @@ window.logout = logout;
 window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.showUpload = showUpload;
+
 
 
 
