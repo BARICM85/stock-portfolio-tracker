@@ -409,10 +409,16 @@ async function addStock() {
 function showUpload() {
     document.getElementById("content").innerHTML = `
         <h2>Upload Trade Excel</h2>
-        <p><strong>Required Excel Columns:</strong></p>
-        <p>date | script | isin | exchange | type | quantity | price</p>
-        <p>Example:</p>
-        <p>2024-01-10 | TCS | INE467B01029 | NSE | BUY | 10 | 3500</p>
+
+        <div class="card">
+            <p><strong>Required Excel Columns:</strong></p>
+            <p>date | script | isin | exchange | type | quantity | price</p>
+
+            <p><strong>Example:</strong></p>
+            <p>2024-01-10 | TCS | INE467B01029 | NSE | BUY | 10 | 3500</p>
+        </div>
+
+        <br>
 
         <input type="file" id="excelFile" accept=".xlsx,.xls">
         <br><br>
@@ -445,12 +451,12 @@ function handleExcelUpload() {
 
         json.forEach(row => {
 
-            const script = String(row.script || "").toUpperCase();
-            const isin = String(row.isin || "");
-            const exchange = String(row.exchange || "").toUpperCase();
-            const type = String(row.type || "").toUpperCase();
-            const quantity = parseFloat(row.quantity);
-            const price = parseFloat(row.price);
+            const script = String(row.script || row.Script || "").toUpperCase();
+            const isin = String(row.isin || row.ISIN || "");
+            const exchange = String(row.exchange || row.Exchange || "").toUpperCase();
+            const type = String(row.type || row.Type || "").toUpperCase();
+            const quantity = parseFloat(row.quantity || row.Quantity);
+            const price = parseFloat(row.price || row.Price);
 
             if (!script || !type || isNaN(quantity) || isNaN(price)) return;
 
@@ -475,18 +481,13 @@ function handleExcelUpload() {
             }
 
             if (type === "BUY") {
-
                 existing.totalInvestment += quantity * price;
                 existing.quantity += quantity;
+            }
 
-            } else if (type === "SELL") {
-
+            if (type === "SELL") {
                 existing.quantity -= quantity;
-
-                if (existing.quantity < 0) {
-                    existing.quantity = 0;
-                }
-
+                if (existing.quantity < 0) existing.quantity = 0;
                 existing.totalInvestment = existing.averagePrice * existing.quantity;
             }
 
@@ -500,56 +501,55 @@ function handleExcelUpload() {
 
         });
 
-        // Remove zero quantity stocks
         portfolio = portfolio.filter(s => s.quantity > 0);
 
         savePortfolio(portfolio);
 
         showToast("Trades uploaded successfully!", "success");
 
-let previewRows = json.slice(0, 5).map(row => `
-    <tr>
-        <td>${row.date || row.Date || ""}</td>
-        <td>${row.script || row.Script || ""}</td>
-        <td>${row.isin || row.ISIN || ""}</td>
-        <td>${row.exchange || row.Exchange || ""}</td>
-        <td>${row.type || row.Type || ""}</td>
-        <td>${row.quantity || row.Quantity || ""}</td>
-        <td>${row.price || row.Price || ""}</td>
-    </tr>
-`).join("");
-
-document.getElementById("content").innerHTML = `
-    <div class="card">
-        <h3>Excel Upload Successful</h3>
-
-        <p><strong>Required Columns:</strong></p>
-        <p>date | script | isin | exchange | type | quantity | price</p>
-
-        <p><strong>Example:</strong></p>
-        <p>2024-01-10 | TCS | INE467B01029 | NSE | BUY | 10 | 3500</p>
-
-        <br>
-
-        <h4>Uploaded Preview (First 5 Rows)</h4>
-
-        <table border="1" cellpadding="5" style="border-collapse:collapse;width:100%;">
+        // Preview Section
+        let previewRows = json.slice(0, 5).map(row => `
             <tr>
-                <th>Date</th>
-                <th>Script</th>
-                <th>ISIN</th>
-                <th>Exchange</th>
-                <th>Type</th>
-                <th>Qty</th>
-                <th>Price</th>
+                <td>${row.date || row.Date || ""}</td>
+                <td>${row.script || row.Script || ""}</td>
+                <td>${row.isin || row.ISIN || ""}</td>
+                <td>${row.exchange || row.Exchange || ""}</td>
+                <td>${row.type || row.Type || ""}</td>
+                <td>${row.quantity || row.Quantity || ""}</td>
+                <td>${row.price || row.Price || ""}</td>
             </tr>
-            ${previewRows}
-        </table>
+        `).join("");
 
-        <br>
-        <button onclick="showPortfolio()">Go to Portfolio</button>
-    </div>
-`;
+        document.getElementById("content").innerHTML = `
+            <div class="card">
+                <h3>Excel Upload Successful</h3>
+
+                <p><strong>Required Columns:</strong></p>
+                <p>date | script | isin | exchange | type | quantity | price</p>
+
+                <h4>Uploaded Preview (First 5 Rows)</h4>
+
+                <table border="1" style="border-collapse:collapse;width:100%;">
+                    <tr>
+                        <th>Date</th>
+                        <th>Script</th>
+                        <th>ISIN</th>
+                        <th>Exchange</th>
+                        <th>Type</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                    </tr>
+                    ${previewRows}
+                </table>
+
+                <br>
+                <button onclick="showPortfolio()">Go to Portfolio</button>
+            </div>
+        `;
+    };
+
+    reader.readAsArrayBuffer(file);
+}
 
 function showToast(message, type = "info") {
 
@@ -697,6 +697,7 @@ window.logout = logout;
 window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.showUpload = showUpload;
+
 
 
 
