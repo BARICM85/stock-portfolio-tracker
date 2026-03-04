@@ -238,7 +238,28 @@ async function showPortfolio() {
 
     portfolio = loadPortfolio();
 
-    let html = "<h2>Portfolio</h2>";
+    let html = `
+    <h2>Portfolio - ${activePortfolio}</h2>
+
+    <div style="margin-bottom:15px; display:flex; gap:10px;">
+
+        <button onclick="clearPortfolio('portfolioA')"
+            style="background:#2563eb;color:white;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;">
+            View A
+        </button>
+
+        <button onclick="clearPortfolio('portfolioB')"
+            style="background:#2563eb;color:white;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;">
+            View B
+        </button>
+
+        <button onclick="clearPortfolio('${activePortfolio}')"
+            style="background:#b91c1c;color:white;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;">
+            Clear ${activePortfolio}
+        </button>
+
+    </div>
+`;
 
     let totalInvested = 0;
     let totalCurrent = 0;
@@ -308,6 +329,16 @@ async function showPortfolio() {
 
     showPortfolio();
 }
+  function clearPortfolio(type) {
+
+    if (!confirm("This will delete ALL stocks in " + type + ". Continue?"))
+        return;
+
+    savePortfolio(type, []);
+
+    showPortfolio();
+}
+  
     // 🔥 SORTING SECTION
 
     const gainers = [...analysis]
@@ -738,6 +769,8 @@ window.logout = logout;
 window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.switchPortfolio = switchPortfolio;
+window.clearPortfolio = clearPortfolio;
+
 
 
 
