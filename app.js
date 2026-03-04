@@ -158,28 +158,38 @@ async function login() {
 
 function calculateTotalInvested(portfolio) {
     return portfolio.reduce((total, stock) => {
-        return total + (Number(stock.quantity) * Number(stock.price));
+        const qty = Number(stock.quantity) || 0;
+        const price = Number(stock.averagePrice || stock.price) || 0;
+        return total + (qty * price);
     }, 0);
 }
 
 function calculateCurrentValue(portfolio) {
     return portfolio.reduce((total, stock) => {
-        return total + (Number(stock.quantity) * Number(stock.currentPrice || stock.price));
+        const qty = Number(stock.quantity) || 0;
+        const current = Number(stock.currentPrice || stock.averagePrice || stock.price) || 0;
+        return total + (qty * current);
     }, 0);
 }
+
+
+/* ================= DASHBOARD ================= */
+
 function showDashboard() {
 
-    portfolio = loadPortfolio();
+    portfolio = loadPortfolio() || [];
 
     const invested = calculateTotalInvested(portfolio);
     const current = calculateCurrentValue(portfolio);
     const profit = current - invested;
-    const percent =
-        invested > 0 ? ((profit / invested) * 100).toFixed(2) : 0;
+
+    const percent = invested > 0
+        ? ((profit / invested) * 100).toFixed(2)
+        : "0.00";
 
     const colorClass = profit >= 0 ? "positive" : "negative";
 
-    let html = `
+    document.getElementById("content").innerHTML = `
         <h2>Dashboard</h2>
 
         <div class="summary-grid">
@@ -203,14 +213,20 @@ function showDashboard() {
 
         </div>
     `;
-
-    document.getElementById("content").innerHTML = html;
 }
+
+
+/* ================= LOGIN SCREEN ================= */
+
 function showLogin() {
     document.getElementById("content").innerHTML = `
         <h2>Login</h2>
-        <input id="email" placeholder="Email">
+
+        <input id="email" type="email" placeholder="Email">
         <input id="password" type="password" placeholder="Password">
+
+        <br><br>
+
         <button onclick="register()">Register</button>
         <button onclick="login()">Login</button>
     `;
@@ -697,6 +713,7 @@ window.logout = logout;
 window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.showUpload = showUpload;
+
 
 
 
