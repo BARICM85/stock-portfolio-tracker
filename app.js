@@ -386,6 +386,12 @@ function handleExcelUpload() {
 
     reader.readAsArrayBuffer(file);
 }
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.innerText = message;
+    toast.style.display = "block";
+    setTimeout(() => toast.style.display = "none", 3000);
+}
 async function showBenchmark() {
 
     portfolio = loadPortfolio();
@@ -508,6 +514,7 @@ window.login = login;
 window.deleteStock = deleteStock;
 window.googleLogin = googleLogin;
 window.logout = logout;
+
 
 
 
