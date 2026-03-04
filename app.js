@@ -26,6 +26,26 @@ async function logout() {
         alert(error.message);
     }
 }
+
+auth.onAuthStateChanged(user => {
+    const profileDiv = document.getElementById("profile");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (user) {
+        profileDiv.innerHTML = `
+            <img src="${user.photoURL || ''}">
+            <p>${user.displayName || user.email}</p>
+        `;
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "block";
+    } else {
+        profileDiv.innerHTML = "";
+        loginBtn.style.display = "block";
+        logoutBtn.style.display = "none";
+    }
+});
+
 import { loadPortfolio, savePortfolio } from "./storage.js";
 
 // 🔥 Firebase Imports
@@ -230,20 +250,39 @@ async function showPortfolio() {
         const color = gain >= 0 ? "green" : "red";
 
         html += `
-            <p>
-                <strong>${stock.name}</strong>
-                | Qty: ${stock.quantity}
-                | Buy: ₹${stock.price}
-                | Live: ₹${stock.currentPrice}
-                | <span style="color:${color}">
-                    P/L: ₹${gain.toFixed(2)} (${gainPercent.toFixed(2)}%)
-                  </span>
-                | <button onclick="deleteStock(${index})"
-                    style="margin-left:10px;background:red;color:white;border:none;padding:5px 8px;border-radius:4px;">
-                    Delete
-                  </button>
-            </p>
-        `;
+    <div class="card stock-card">
+        <div class="stock-header">
+            <h3>${stock.name}</h3>
+            <button class="delete-btn" onclick="deleteStock(${index})">
+                Delete
+            </button>
+        </div>
+
+        <div class="stock-grid">
+            <div>
+                <span class="label">Quantity</span>
+                <span>${stock.quantity}</span>
+            </div>
+
+            <div>
+                <span class="label">Buy Price</span>
+                <span>₹${stock.price}</span>
+            </div>
+
+            <div>
+                <span class="label">Live Price</span>
+                <span>₹${stock.currentPrice}</span>
+            </div>
+
+            <div>
+                <span class="label">P/L</span>
+                <span class="${gain >= 0 ? 'positive' : 'negative'}">
+                    ₹${gain.toFixed(2)} (${gainPercent.toFixed(2)}%)
+                </span>
+            </div>
+        </div>
+    </div>
+`;
     }
 
     const totalGain = totalCurrent - totalInvested;
@@ -514,6 +553,7 @@ window.login = login;
 window.deleteStock = deleteStock;
 window.googleLogin = googleLogin;
 window.logout = logout;
+
 
 
 
