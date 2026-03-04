@@ -168,6 +168,7 @@ function calculateCurrentValue(portfolio) {
     }, 0);
 }
 function showDashboard() {
+
     portfolio = loadPortfolio();
 
     const invested = calculateTotalInvested(portfolio);
@@ -176,16 +177,34 @@ function showDashboard() {
     const percent =
         invested > 0 ? ((profit / invested) * 100).toFixed(2) : 0;
 
-    const color = profit >= 0 ? "green" : "red";
+    const colorClass = profit >= 0 ? "positive" : "negative";
 
-    document.getElementById("content").innerHTML = `
+    let html = `
         <h2>Dashboard</h2>
-        <p>Total Invested: ₹${invested.toFixed(2)}</p>
-        <p>Current Value: ₹${current.toFixed(2)}</p>
-        <p style="color:${color}">
-            Profit/Loss: ₹${profit.toFixed(2)} (${percent}%)
-        </p>
+
+        <div class="summary-grid">
+
+            <div class="card">
+                <h3>Total Invested</h3>
+                <p>₹${invested.toFixed(2)}</p>
+            </div>
+
+            <div class="card">
+                <h3>Current Value</h3>
+                <p>₹${current.toFixed(2)}</p>
+            </div>
+
+            <div class="card">
+                <h3>Total P/L</h3>
+                <p class="${colorClass}">
+                    ₹${profit.toFixed(2)} (${percent}%)
+                </p>
+            </div>
+
+        </div>
     `;
+
+    document.getElementById("content").innerHTML = html;
 }
 function showLogin() {
     document.getElementById("content").innerHTML = `
@@ -570,6 +589,7 @@ window.deleteStock = deleteStock;
 window.googleLogin = googleLogin;
 window.logout = logout;
 window.showToast = showToast;
+
 
 
 
