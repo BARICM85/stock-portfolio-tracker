@@ -62,6 +62,25 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+auth.onAuthStateChanged(user => {
+    const profileDiv = document.getElementById("profile");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (user) {
+        profileDiv.innerHTML = `
+            <img src="${user.photoURL || ''}">
+            <p>${user.displayName || user.email}</p>
+        `;
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "block";
+    } else {
+        profileDiv.innerHTML = "";
+        loginBtn.style.display = "block";
+        logoutBtn.style.display = "none";
+    }
+});
+
 async function savePortfolioToCloud() {
     const user = auth.currentUser;
     if (!user) return;
@@ -570,6 +589,7 @@ window.deleteStock = deleteStock;
 window.googleLogin = googleLogin;
 window.logout = logout;
 window.showToast = showToast;
+
 
 
 
