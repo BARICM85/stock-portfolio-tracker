@@ -11,6 +11,47 @@ body {
     color: #333;
 }
 
+.stock-card {
+    margin-bottom: 15px;
+}
+
+.stock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.stock-header h3 {
+    margin: 0;
+}
+
+.stock-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.label {
+    display: block;
+    font-size: 12px;
+    color: #666;
+}
+
+.delete-btn {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.delete-btn:hover {
+    background: #b91c1c;
+}
+
 /* Sidebar */
 .sidebar {
     width: 250px;
@@ -111,3 +152,4 @@ body {
         min-height: auto;
     }
 }
+
