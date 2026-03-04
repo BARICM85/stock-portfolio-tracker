@@ -1,5 +1,31 @@
-import { GoogleAuthProvider, signInWithPopup } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+/* ================= GOOGLE LOGIN ================= */
+
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const provider = new GoogleAuthProvider();
+
+async function googleLogin() {
+    try {
+        await signInWithPopup(auth, provider);
+        alert("Google Login Successful!");
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+async function logout() {
+    try {
+        await signOut(auth);
+        alert("Logged out successfully!");
+        showDashboard();
+    } catch (error) {
+        alert(error.message);
+    }
+}
 import { loadPortfolio, savePortfolio } from "./storage.js";
 async function googleLogin() {
     const provider = new GoogleAuthProvider();
@@ -492,6 +518,8 @@ window.showLogin = showLogin;
 window.register = register;
 window.login = login;
 window.deleteStock = deleteStock;
+window.googleLogin = googleLogin;
+window.logout = logout;
 
 
 
