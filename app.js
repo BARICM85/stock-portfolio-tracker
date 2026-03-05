@@ -767,7 +767,18 @@ function deleteStock(type, index) {
 
     showPortfolio();
 }
+function clearPortfolio(type) {
+
+    if (!confirm("Delete all stocks from this portfolio?")) return;
+
+    savePortfolio(type, []);
+
+    showToast("Portfolio cleared");
+
+    showPortfolio();
+}
 window.deleteStock = deleteStock;
+window.clearPortfolio = clearPortfolio;
 window.showDashboard = showDashboard;
 window.showPortfolio = showPortfolio;
 window.showAddStock = showAddStock;
@@ -785,7 +796,8 @@ window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.switchPortfolio = switchPortfolio;
 window.addStock = addStock;
-window.clearPortfolio = clearPortfolio;
+
+
 
 
 
