@@ -327,7 +327,7 @@ async function showPortfolio() {
       `;
     }
 
-      function deleteStock(type, index) {
+  function deleteStock(type, index) {
 
     if (!confirm("Delete this stock?")) return;
 
@@ -766,6 +766,7 @@ window.handleExcelUpload = handleExcelUpload;
 window.switchPortfolio = switchPortfolio;
 window.clearPortfolio = clearPortfolio;
 window.addStock = addStock;
+
 
 
 
