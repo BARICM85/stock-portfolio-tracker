@@ -28,22 +28,41 @@
         <div id="profile" class="profile"></div>
 
         <!-- Navigation -->
-        <button onclick="showDashboard()">Dashboard</button>
-        <button onclick="showPortfolio()">Portfolio</button>
-        <button onclick="showAddStock()">Add Stock</button>
-        <button onclick="showUpload()">Upload Excel</button>
-        <button onclick="showAllocation()">Allocation</button>
-        <button onclick="showBenchmark()">Benchmark</button>
-        <button onclick="showRisk()">Risk</button>
-        <button onclick="downloadExcel()">Download Excel</button>
-        <button onclick="switchPortfolio('portfolioA')">Portfolio A</button>
-        <button onclick="switchPortfolio('portfolioB')">Portfolio B</button>
-        <button onclick="handleExcelUpload('portfolioA')">Upload A</button>
-        <button onclick="handleExcelUpload('portfolioB')">Upload B</button>
-        <button onclick="showUpload('portfolioA')">Upload Excel A</button>
-        <button onclick="showUpload('portfolioB')">Upload Excel B</button>
-        <button onclick="deleteStock('portfolioA', 0)">
-        <button onclick="addStock()">Add Stock</button>
+        <div class="menu">
+
+<button onclick="showDashboard()">Dashboard</button>
+
+<button onclick="showPortfolio()">Portfolio</button>
+
+<button onclick="showAddStock()">Add Stock</button>
+
+<button onclick="showUpload()">Upload Excel</button>
+
+<button onclick="showAllocation()">Allocation</button>
+
+<button onclick="showBenchmark()">Benchmark</button>
+
+<button onclick="showRisk()">Risk</button>
+
+<button onclick="downloadExcel()">Download Excel</button>
+
+<hr>
+
+<p class="menu-section">Switch Portfolio</p>
+
+<button onclick="switchPortfolio('portfolioA')">
+Portfolio A
+</button>
+
+<button onclick="switchPortfolio('portfolioB')">
+Portfolio B
+</button>
+
+<hr>
+
+<button onclick="logout()">Logout</button>
+
+</div>
 
         <hr style="margin:15px 0; border-color:#333;">
 
@@ -81,6 +100,7 @@
 </div>
 </body>
 </html>
+
 
 
 
