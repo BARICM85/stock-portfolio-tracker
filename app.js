@@ -96,23 +96,21 @@ async function savePortfolioToCloud() {
 /* ================= LIVE PRICE FETCH ================= */
 
 async function fetchLivePrice(symbol) {
+
     try {
-        const response = await fetch(
-            "https://stock-price-proxy-2owf.onrender.com/price/" + symbol
-        );
 
-        if (!response.ok) return null;
+        const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbol}`;
 
-        const data = await response.json();
+        const res = await fetch(url);
+        const data = await res.json();
 
-        if (data && data.price !== undefined) {
-            return Number(data.price);
-        }
+        const price =
+            data.quoteResponse.result[0]?.regularMarketPrice;
 
-        return null;
+        return price || null;
 
     } catch (error) {
-        console.error("Live fetch error:", error);
+        console.log("Price fetch error", error);
         return null;
     }
 }
@@ -754,11 +752,6 @@ function deleteStock(type, index) {
 
     let portfolio = loadPortfolio(type);
 
-    if (!portfolio || portfolio.length === 0) {
-        showToast("Portfolio empty");
-        return;
-    }
-
     portfolio.splice(index, 1);
 
     savePortfolio(type, portfolio);
@@ -769,7 +762,7 @@ function deleteStock(type, index) {
 }
 function clearPortfolio(type) {
 
-    if (!confirm("Delete all stocks from this portfolio?")) return;
+    if (!confirm("Delete all stocks from " + type + "?")) return;
 
     savePortfolio(type, []);
 
@@ -796,6 +789,7 @@ window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.switchPortfolio = switchPortfolio;
 window.addStock = addStock;
+
 
 
 
