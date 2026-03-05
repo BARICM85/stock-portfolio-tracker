@@ -233,7 +233,16 @@ function showLogin() {
     `;
 }
 /* ================= PORTFOLIO ================= */
+function switchPortfolio(type) {
 
+    activePortfolio = type;
+
+    portfolio = loadPortfolio(activePortfolio);
+
+    showToast("Switched to " + type);
+
+    showPortfolio();
+}
 async function showPortfolio() {
 
     portfolio = loadPortfolio();
@@ -455,32 +464,23 @@ async function addStock() {
 
 /* ================= EXCEL UPLOAD ================= */
 
-function showUpload(type) {
-
-    activePortfolio = type;
+function showUpload() {
 
     document.getElementById("content").innerHTML = `
-        <h2>Upload Trade Excel - ${type}</h2>
 
-        <p><strong>Required Columns:</strong></p>
+        <h2>Upload Trades (Active: ${activePortfolio})</h2>
+
+        <p><strong>Required Excel Columns:</strong></p>
         <p>date | script | isin | exchange | type | quantity | price</p>
 
-        <p><strong>Example:</strong></p>
-        <p>2024-01-10 | TCS | INE467B01029 | NSE | BUY | 10 | 3500</p>
-
-        <br>
-
-        <input type="file" id="excelFile-${type}" accept=".xlsx,.xls">
+        <input type="file" id="excelFile" accept=".xlsx,.xls">
 
         <br><br>
 
-        <button onclick="handleExcelUpload('${type}')">
-            Upload
+        <button onclick="handleExcelUpload()">
+        Upload Excel
         </button>
 
-        <br><br>
-
-        <button onclick="showPortfolio()">Back to Portfolio</button>
     `;
 }
 
@@ -771,6 +771,7 @@ window.handleExcelUpload = handleExcelUpload;
 window.switchPortfolio = switchPortfolio;
 window.clearPortfolio = clearPortfolio;
 window.addStock = addStock;
+
 
 
 
