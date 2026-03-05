@@ -739,12 +739,6 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-function switchPortfolio(type) {
-    activePortfolio = type;
-    portfolio = loadPortfolio(type);
-    showPortfolio();
-}
-
 /* ================= INITIAL LOAD ================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -772,6 +766,7 @@ window.handleExcelUpload = handleExcelUpload;
 window.switchPortfolio = switchPortfolio;
 window.clearPortfolio = clearPortfolio;
 window.addStock = addStock;
+
 
 
 
