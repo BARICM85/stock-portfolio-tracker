@@ -758,7 +758,6 @@ window.downloadExcel = downloadExcel;
 window.showLogin = showLogin;
 window.register = register;
 window.login = login;
-window.deleteStock = deleteStock;
 window.googleLogin = googleLogin;
 window.logout = logout;
 window.showToast = showToast;
@@ -766,6 +765,7 @@ window.handleExcelUpload = handleExcelUpload;
 window.switchPortfolio = switchPortfolio;
 window.clearPortfolio = clearPortfolio;
 window.addStock = addStock;
+
 
 
 
