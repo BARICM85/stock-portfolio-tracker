@@ -768,6 +768,9 @@ window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.switchPortfolio = switchPortfolio;
 window.addStock = addStock;
+window.deleteStock = deleteStock;
+window.clearPortfolio = clearPortfolio;
+
 
 
 
