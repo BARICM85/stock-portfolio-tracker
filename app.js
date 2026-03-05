@@ -329,24 +329,28 @@ async function showPortfolio() {
 
   function deleteStock(type, index) {
 
-    if (!confirm("Delete this stock?")) return;
-
-    let portfolio = loadPortfolio(type);
+    portfolio = loadPortfolio(type);
 
     portfolio.splice(index, 1);
 
     savePortfolio(type, portfolio);
 
+    showToast("Stock deleted");
+
     showPortfolio();
 }
   function clearPortfolio(type) {
 
-    if (!confirm("This will delete ALL stocks in " + type + ". Continue?"))
-        return;
+    if (!confirm("Delete all stocks from " + type + "?")) return;
 
     savePortfolio(type, []);
 
-    showPortfolio();
+    if (activePortfolio === type) {
+        portfolio = [];
+        showPortfolio();
+    }
+
+    showToast(type + " cleared successfully");
 }
   
     // 🔥 SORTING SECTION
@@ -764,6 +768,7 @@ window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.switchPortfolio = switchPortfolio;
 window.addStock = addStock;
+
 
 
 
