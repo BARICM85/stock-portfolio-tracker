@@ -750,7 +750,24 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ================= EXPOSE TO HTML ================= */
+function deleteStock(type, index) {
 
+    let portfolio = loadPortfolio(type);
+
+    if (!portfolio || portfolio.length === 0) {
+        showToast("Portfolio empty");
+        return;
+    }
+
+    portfolio.splice(index, 1);
+
+    savePortfolio(type, portfolio);
+
+    showToast("Stock deleted");
+
+    showPortfolio();
+}
+window.deleteStock = deleteStock;
 window.showDashboard = showDashboard;
 window.showPortfolio = showPortfolio;
 window.showAddStock = showAddStock;
@@ -768,8 +785,8 @@ window.showToast = showToast;
 window.handleExcelUpload = handleExcelUpload;
 window.switchPortfolio = switchPortfolio;
 window.addStock = addStock;
-window.deleteStock = deleteStock;
 window.clearPortfolio = clearPortfolio;
+
 
 
 
