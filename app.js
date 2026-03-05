@@ -233,19 +233,7 @@ function showLogin() {
     `;
 }
 /* ================= PORTFOLIO ================= */
-export function loadPortfolio(type = "portfolioA") {
 
-    const data = localStorage.getItem(type);
-
-    return data ? JSON.parse(data) : [];
-
-}
-
-export function savePortfolio(type, portfolio) {
-
-    localStorage.setItem(type, JSON.stringify(portfolio));
-
-}
 function switchPortfolio(type) {
 
     activePortfolio = type;
@@ -784,6 +772,7 @@ window.handleExcelUpload = handleExcelUpload;
 window.switchPortfolio = switchPortfolio;
 window.clearPortfolio = clearPortfolio;
 window.addStock = addStock;
+
 
 
 
